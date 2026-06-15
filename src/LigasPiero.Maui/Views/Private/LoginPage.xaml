@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:LigasPiero.Maui.ViewModels"
+             x:Class="LigasPiero.Maui.Views.Private.LoginPage"
+             x:DataType="vm:LoginViewModel"
+             Title="{Binding Title}"
+             Shell.NavBarIsVisible="False">
+
+    <Grid RowDefinitions="*,Auto,*" Padding="32">
+        <VerticalStackLayout Grid.Row="1" Spacing="16">
+            <!-- Logo / Title -->
+            <Label Text="⚽" FontSize="64" HorizontalOptions="Center" />
+            <Label Text="Liga Deportiva"
+                   FontSize="28"
+                   FontAttributes="Bold"
+                   HorizontalOptions="Center"
+                   TextColor="{StaticResource Primary}" />
+            <Label Text="Iniciar Sesión"
+                   FontSize="16"
+                   HorizontalOptions="Center"
+                   TextColor="Gray"
+                   Margin="0,0,0,20" />
+
+            <!-- Error Message -->
+            <Frame IsVisible="{Binding HasError}"
+                   BackgroundColor="#FFE0E0"
+                   BorderColor="#FF4444"
+                   Padding="12"
+                   CornerRadius="8">
+                <Label Text="{Binding ErrorMessage}"
+                       TextColor="#CC0000"
+                       FontSize="13"
+                       HorizontalTextAlignment="Center" />
+            </Frame>
+
+            <!-- Username -->
+            <VerticalStackLayout Spacing="4">
+                <Label Text="Usuario" FontSize="14" FontAttributes="Bold" />
+                <Entry Text="{Binding Username}"
+                       Placeholder="Ingrese su usuario"
+                       Keyboard="Text"
+                       ReturnType="Next"
+                       ClearButtonVisibility="WhileEditing" />
+            </VerticalStackLayout>
+
+            <!-- Password -->
+            <VerticalStackLayout Spacing="4">
+                <Label Text="Contraseña" FontSize="14" FontAttributes="Bold" />
+                <Entry Text="{Binding Password}"
+                       Placeholder="Ingrese su contraseña"
+                       IsPassword="True"
+                       ReturnType="Go"
+                       ReturnCommand="{Binding LoginCommand}" />
+            </VerticalStackLayout>
+
+            <!-- Login Button -->
+            <Button Text="Ingresar"
+                    Command="{Binding LoginCommand}"
+                    BackgroundColor="{StaticResource Primary}"
+                    TextColor="White"
+                    FontAttributes="Bold"
+                    CornerRadius="12"
+                    HeightRequest="50"
+                    Margin="0,12,0,0" />
+
+            <ActivityIndicator IsRunning="{Binding IsBusy}"
+                               IsVisible="{Binding IsBusy}"
+                               HorizontalOptions="Center"
+                               Color="{StaticResource Primary}" />
+
+            <!-- Hint -->
+            <Label Text="Credenciales de prueba: admin / admin123"
+                   FontSize="11"
+                   TextColor="Gray"
+                   HorizontalTextAlignment="Center"
+                   Margin="0,16,0,0" />
+        </VerticalStackLayout>
+    </Grid>
+</ContentPage>

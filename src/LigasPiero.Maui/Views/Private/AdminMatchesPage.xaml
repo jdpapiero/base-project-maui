@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:LigasPiero.Maui.ViewModels"
+             x:Class="LigasPiero.Maui.Views.Private.AdminMatchesPage"
+             x:DataType="vm:AdminMatchesViewModel"
+             Title="{Binding Title}">
+
+    <Grid RowDefinitions="Auto,Auto,*" Padding="16">
+        <!-- League Picker -->
+        <VerticalStackLayout Grid.Row="0" Spacing="8">
+            <Label Text="Seleccione Liga" FontSize="16" FontAttributes="Bold" />
+            <CollectionView ItemsSource="{Binding Leagues}"
+                            SelectionMode="None"
+                            HeightRequest="80">
+                <CollectionView.ItemsLayout>
+                    <LinearItemsLayout Orientation="Horizontal" ItemSpacing="8" />
+                </CollectionView.ItemsLayout>
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="x:String">
+                        <Frame Padding="12,8" CornerRadius="20"
+                               BackgroundColor="{StaticResource Primary}"
+                               HasShadow="False"
+                               MinimumWidthRequest="120">
+                            <Frame.GestureRecognizers>
+                                <TapGestureRecognizer
+                                    Command="{Binding Source={RelativeSource AncestorType={x:Type vm:AdminMatchesViewModel}}, Path=SelectLeagueCommand}"
+                                    CommandParameter="{Binding .}" />
+                            </Frame.GestureRecognizers>
+                            <Label Text="{Binding Name}" TextColor="White"
+                                   FontSize="13" HorizontalTextAlignment="Center"
+                                   VerticalOptions="Center" />
+                        </Frame>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </VerticalStackLayout>
+
+        <!-- Season Picker -->
+        <VerticalStackLayout Grid.Row="1" Spacing="8" Margin="0,8">
+            <Label Text="Seleccione Gestión" FontSize="16" FontAttributes="Bold" />
+            <CollectionView ItemsSource="{Binding Seasons}"
+                            SelectionMode="None"
+                            HeightRequest="60">
+                <CollectionView.ItemsLayout>
+                    <LinearItemsLayout Orientation="Horizontal" ItemSpacing="8" />
+                </CollectionView.ItemsLayout>
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="x:String">
+                        <Frame Padding="12,8" CornerRadius="20"
+                               BackgroundColor="#FF9800"
+                               HasShadow="False">
+                            <Frame.GestureRecognizers>
+                                <TapGestureRecognizer
+                                    Command="{Binding Source={RelativeSource AncestorType={x:Type vm:AdminMatchesViewModel}}, Path=SelectSeasonCommand}"
+                                    CommandParameter="{Binding .}" />
+                            </Frame.GestureRecognizers>
+                            <Label Text="{Binding Name}" TextColor="White"
+                                   FontSize="13" HorizontalTextAlignment="Center" />
+                        </Frame>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </VerticalStackLayout>
+
+        <!-- Matches List -->
+        <CollectionView Grid.Row="2"
+                         ItemsSource="{Binding Matches}"
+                         SelectionMode="None"
+                         EmptyView="Seleccione una liga y gestión para ver los partidos">
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="x:String">
+                    <Frame Padding="12" Margin="0,4" CornerRadius="12"
+                           BackgroundColor="{AppThemeBinding Light=White, Dark=#1C1C1E}"
+                           BorderColor="{AppThemeBinding Light=#E0E0E0, Dark=#333}">
+                        <Frame.GestureRecognizers>
+                            <TapGestureRecognizer
+                                Command="{Binding Source={RelativeSource AncestorType={x:Type vm:AdminMatchesViewModel}}, Path=EditMatchCommand}"
+                                CommandParameter="{Binding .}" />
+                        </Frame.GestureRecognizers>
+                        <Grid ColumnDefinitions="*,Auto">
+                            <VerticalStackLayout Grid.Column="0" Spacing="4">
+                                <Label FontSize="15" FontAttributes="Bold">
+                                    <Label.FormattedText>
+                                        <FormattedString>
+                                            <Span Text="{Binding HomeTeamName}" />
+                                            <Span Text=" vs " FontAttributes="None" TextColor="Gray" />
+                                            <Span Text="{Binding AwayTeamName}" />
+                                        </FormattedString>
+                                    </Label.FormattedText>
+                                </Label>
+                                <Label Text="{Binding MatchDate, StringFormat='{0:dd/MM/yyyy HH:mm}'}"
+                                       FontSize="12" TextColor="Gray" />
+                                <Label Text="{Binding Score}" FontSize="13"
+                                       TextColor="{StaticResource Primary}" />
+                            </VerticalStackLayout>
+                            <Label Grid.Column="1" Text="✏️" FontSize="24"
+                                   VerticalOptions="Center" />
+                        </Grid>
+                    </Frame>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+        <ActivityIndicator Grid.Row="2"
+                           IsRunning="{Binding IsBusy}"
+                           IsVisible="{Binding IsBusy}"
+                           HorizontalOptions="Center"
+                           VerticalOptions="Center"
+                           Color="{StaticResource Primary}" />
+    </Grid>
+</ContentPage>

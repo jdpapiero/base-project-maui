@@ -1,0 +1,258 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:LigasPiero.Maui.ViewModels"
+             x:Class="LigasPiero.Maui.Views.Private.EditMatchPage"
+             x:DataType="vm:EditMatchViewModel"
+             Title="{Binding Title}">
+
+    <ScrollView Padding="16">
+        <VerticalStackLayout Spacing="16">
+            <!-- Match Header -->
+            <Frame Padding="16" CornerRadius="12"
+                   BackgroundColor="{StaticResource Primary}">
+                <VerticalStackLayout Spacing="4">
+                    <Label Text="{Binding Match.HomeTeamName, StringFormat='Local: {0}'}"
+                           TextColor="White" FontSize="16" FontAttributes="Bold" />
+                    <Label Text="{Binding Match.AwayTeamName, StringFormat='Visitante: {0}'}"
+                           TextColor="White" FontSize="16" FontAttributes="Bold" />
+                    <Label Text="{Binding Match.MatchDate, StringFormat='{0:dd/MM/yyyy HH:mm}'}"
+                           TextColor="#DDDDDD" FontSize="13" />
+                    <HorizontalStackLayout Spacing="8" Margin="0,8,0,0">
+                        <Label Text="{Binding Match.HomeGoals, StringFormat='{0}'}"
+                               TextColor="White" FontSize="28" FontAttributes="Bold" />
+                        <Label Text="-" TextColor="White" FontSize="28" VerticalOptions="Center" />
+                        <Label Text="{Binding Match.AwayGoals, StringFormat='{0}'}"
+                               TextColor="White" FontSize="28" FontAttributes="Bold" />
+                    </HorizontalStackLayout>
+                </VerticalStackLayout>
+            </Frame>
+
+            <!-- Status Actions -->
+            <Frame Padding="16" CornerRadius="12"
+                   BackgroundColor="{AppThemeBinding Light=White, Dark=#1C1C1E}">
+                <VerticalStackLayout Spacing="8">
+                    <Label Text="Estado del Partido" FontSize="16" FontAttributes="Bold" />
+                    <HorizontalStackLayout Spacing="8">
+                        <Button Text="Iniciar" FontSize="12"
+                                Command="{Binding UpdateMatchStatusCommand}"
+                                CommandParameter="InProgress"
+                                BackgroundColor="#4CAF50" TextColor="White"
+                                CornerRadius="8" Padding="12,6" />
+                        <Button Text="Finalizar" FontSize="12"
+                                Command="{Binding UpdateMatchStatusCommand}"
+                                CommandParameter="Finished"
+                                BackgroundColor="#2196F3" TextColor="White"
+                                CornerRadius="8" Padding="12,6" />
+                        <Button Text="Suspender" FontSize="12"
+                                Command="{Binding UpdateMatchStatusCommand}"
+                                CommandParameter="Suspended"
+                                BackgroundColor="#FF9800" TextColor="White"
+                                CornerRadius="8" Padding="12,6" />
+                    </HorizontalStackLayout>
+                </VerticalStackLayout>
+            </Frame>
+
+            <!-- Load Players for Team -->
+            <Frame Padding="16" CornerRadius="12"
+                   BackgroundColor="{AppThemeBinding Light=White, Dark=#1C1C1E}">
+                <VerticalStackLayout Spacing="8">
+                    <Label Text="Cargar Jugadores del Equipo" FontSize="16" FontAttributes="Bold" />
+                    <HorizontalStackLayout Spacing="8">
+                        <Button Text="{Binding Match.HomeTeamName, StringFormat='Local: {0}'}"
+                                FontSize="11"
+                                Command="{Binding LoadPlayersForTeamCommand}"
+                                CommandParameter="{Binding Match.HomeTeamId}"
+                                BackgroundColor="{StaticResource Primary}" TextColor="White"
+                                CornerRadius="8" Padding="10,6" />
+                        <Button Text="{Binding Match.AwayTeamName, StringFormat='Visit.: {0}'}"
+                                FontSize="11"
+                                Command="{Binding LoadPlayersForTeamCommand}"
+                                CommandParameter="{Binding Match.AwayTeamId}"
+                                BackgroundColor="#666" TextColor="White"
+                                CornerRadius="8" Padding="10,6" />
+                    </HorizontalStackLayout>
+                </VerticalStackLayout>
+            </Frame>
+
+            <!-- Add to Lineup -->
+            <Frame Padding="16" CornerRadius="12"
+                   BackgroundColor="{AppThemeBinding Light=#E8F5E9, Dark=#1B3D1B}">
+                <VerticalStackLayout Spacing="8">
+                    <Label Text="📋 Agregar a Planilla" FontSize="16" FontAttributes="Bold" />
+                    <Picker Title="Seleccionar Jugador"
+                            ItemsSource="{Binding AvailablePlayers}"
+                            ItemDisplayBinding="{Binding FullName}"
+                            SelectedItem="{Binding SelectedLineupPlayer}" />
+                    <HorizontalStackLayout Spacing="12">
+                        <CheckBox IsChecked="{Binding IsStarter}" />
+                        <Label Text="Titular" VerticalOptions="Center" />
+                    </HorizontalStackLayout>
+                    <Button Text="Agregar a Planilla"
+                            Command="{Binding AddPlayerToLineupCommand}"
+                            BackgroundColor="#4CAF50" TextColor="White"
+                            CornerRadius="8" />
+                </VerticalStackLayout>
+            </Frame>
+
+            <!-- Current Lineup -->
+            <Frame Padding="16" CornerRadius="12"
+                   BackgroundColor="{AppThemeBinding Light=White, Dark=#1C1C1E}">
+                <VerticalStackLayout Spacing="8">
+                    <Label Text="📋 Planilla Actual" FontSize="16" FontAttributes="Bold" />
+                    <CollectionView ItemsSource="{Binding Lineup}"
+                                    EmptyView="Sin jugadores en planilla">
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate x:DataType="x:String">
+                                <SwipeView>
+                                    <SwipeView.RightItems>
+                                        <SwipeItems>
+                                            <SwipeItem Text="Eliminar"
+                                                       BackgroundColor="Red"
+                                                       Command="{Binding Source={RelativeSource AncestorType={x:Type vm:EditMatchViewModel}}, Path=RemovePlayerFromLineupCommand}"
+                                                       CommandParameter="{Binding .}" />
+                                        </SwipeItems>
+                                    </SwipeView.RightItems>
+                                    <HorizontalStackLayout Spacing="8" Padding="4,8">
+                                        <Label Text="{Binding ShirtNumber, StringFormat='#{0}'}"
+                                               FontAttributes="Bold" WidthRequest="40"
+                                               TextColor="{StaticResource Primary}" />
+                                        <Label Text="{Binding PlayerName}" />
+                                        <Label Text="{Binding TeamName}" FontSize="11"
+                                               TextColor="Gray" VerticalOptions="Center" />
+                                        <Label Text="{Binding IsStarter, Converter={StaticResource StarterConverter}}"
+                                               FontSize="11" TextColor="Gray" VerticalOptions="Center" />
+                                    </HorizontalStackLayout>
+                                </SwipeView>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+                </VerticalStackLayout>
+            </Frame>
+
+            <!-- Add Goal -->
+            <Frame Padding="16" CornerRadius="12"
+                   BackgroundColor="{AppThemeBinding Light=#FFF3E0, Dark=#3D2F1B}">
+                <VerticalStackLayout Spacing="8">
+                    <Label Text="⚽ Registrar Gol" FontSize="16" FontAttributes="Bold" />
+                    <Picker Title="Jugador"
+                            ItemsSource="{Binding AvailablePlayers}"
+                            ItemDisplayBinding="{Binding FullName}"
+                            SelectedItem="{Binding SelectedGoalPlayer}" />
+                    <HorizontalStackLayout Spacing="12">
+                        <VerticalStackLayout>
+                            <Label Text="Minuto" FontSize="12" />
+                            <Entry Text="{Binding GoalMinute}" Keyboard="Numeric"
+                                   WidthRequest="80" />
+                        </VerticalStackLayout>
+                        <VerticalStackLayout>
+                            <Label Text="Autogol" FontSize="12" />
+                            <CheckBox IsChecked="{Binding IsOwnGoal}" />
+                        </VerticalStackLayout>
+                    </HorizontalStackLayout>
+                    <Button Text="Registrar Gol"
+                            Command="{Binding AddGoalCommand}"
+                            BackgroundColor="#FF9800" TextColor="White"
+                            CornerRadius="8" />
+                </VerticalStackLayout>
+            </Frame>
+
+            <!-- Goals List -->
+            <Frame Padding="16" CornerRadius="12"
+                   BackgroundColor="{AppThemeBinding Light=White, Dark=#1C1C1E}">
+                <VerticalStackLayout Spacing="8">
+                    <Label Text="⚽ Goles Registrados" FontSize="16" FontAttributes="Bold" />
+                    <CollectionView ItemsSource="{Binding Goals}"
+                                    EmptyView="Sin goles registrados">
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate x:DataType="x:String">
+                                <SwipeView>
+                                    <SwipeView.RightItems>
+                                        <SwipeItems>
+                                            <SwipeItem Text="Eliminar"
+                                                       BackgroundColor="Red"
+                                                       Command="{Binding Source={RelativeSource AncestorType={x:Type vm:EditMatchViewModel}}, Path=RemoveGoalCommand}"
+                                                       CommandParameter="{Binding .}" />
+                                        </SwipeItems>
+                                    </SwipeView.RightItems>
+                                    <HorizontalStackLayout Spacing="8" Padding="4,8">
+                                        <Label Text="{Binding Minute, StringFormat=&quot;{0}&apos;&quot;}"
+                                               FontAttributes="Bold" WidthRequest="40"
+                                               TextColor="{StaticResource Primary}" />
+                                        <Label Text="{Binding PlayerName}" />
+                                    </HorizontalStackLayout>
+                                </SwipeView>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+                </VerticalStackLayout>
+            </Frame>
+
+            <!-- Add Card -->
+            <Frame Padding="16" CornerRadius="12"
+                   BackgroundColor="{AppThemeBinding Light=#FFEBEE, Dark=#3D1B1B}">
+                <VerticalStackLayout Spacing="8">
+                    <Label Text="🟨🟥 Registrar Tarjeta" FontSize="16" FontAttributes="Bold" />
+                    <Picker Title="Jugador"
+                            ItemsSource="{Binding AvailablePlayers}"
+                            ItemDisplayBinding="{Binding FullName}"
+                            SelectedItem="{Binding SelectedCardPlayer}" />
+                    <HorizontalStackLayout Spacing="12">
+                        <VerticalStackLayout>
+                            <Label Text="Minuto" FontSize="12" />
+                            <Entry Text="{Binding CardMinute}" Keyboard="Numeric"
+                                   WidthRequest="80" />
+                        </VerticalStackLayout>
+                        <VerticalStackLayout>
+                            <Label Text="Tipo" FontSize="12" />
+                            <Picker SelectedItem="{Binding SelectedCardType}"
+                                    WidthRequest="120">
+                                <Picker.Items>
+                                    <x:String>Yellow</x:String>
+                                    <x:String>Red</x:String>
+                                </Picker.Items>
+                            </Picker>
+                        </VerticalStackLayout>
+                    </HorizontalStackLayout>
+                    <Button Text="Registrar Tarjeta"
+                            Command="{Binding AddCardCommand}"
+                            BackgroundColor="#E53935" TextColor="White"
+                            CornerRadius="8" />
+                </VerticalStackLayout>
+            </Frame>
+
+            <!-- Cards List -->
+            <Frame Padding="16" CornerRadius="12"
+                   BackgroundColor="{AppThemeBinding Light=White, Dark=#1C1C1E}">
+                <VerticalStackLayout Spacing="8">
+                    <Label Text="🟨🟥 Tarjetas Registradas" FontSize="16" FontAttributes="Bold" />
+                    <CollectionView ItemsSource="{Binding Cards}"
+                                    EmptyView="Sin tarjetas registradas">
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate x:DataType="x:String">
+                                <SwipeView>
+                                    <SwipeView.RightItems>
+                                        <SwipeItems>
+                                            <SwipeItem Text="Eliminar"
+                                                       BackgroundColor="Red"
+                                                       Command="{Binding Source={RelativeSource AncestorType={x:Type vm:EditMatchViewModel}}, Path=RemoveCardCommand}"
+                                                       CommandParameter="{Binding .}" />
+                                        </SwipeItems>
+                                    </SwipeView.RightItems>
+                                    <HorizontalStackLayout Spacing="8" Padding="4,8">
+                                        <Label Text="{Binding Minute, StringFormat=&quot;{0}&apos;&quot;}"
+                                               FontAttributes="Bold" WidthRequest="40" />
+                                        <BoxView WidthRequest="16" HeightRequest="20"
+                                                 CornerRadius="2"
+                                                 Color="{Binding Type, Converter={StaticResource CardTypeColorConverter}}" />
+                                        <Label Text="{Binding PlayerName}" />
+                                    </HorizontalStackLayout>
+                                </SwipeView>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+                </VerticalStackLayout>
+            </Frame>
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

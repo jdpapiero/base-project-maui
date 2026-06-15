@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Shell
+    x:Class="LigasPiero.Maui.AppShell"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:public="clr-namespace:LigasPiero.Maui.Views.Public"
+    xmlns:private="clr-namespace:LigasPiero.Maui.Views.Private"
+    Shell.FlyoutBehavior="Disabled"
+    Title="Ligas Piero">
+
+    <TabBar>
+        <ShellContent
+            Title="Ligas"
+            Route="home"
+            ContentTemplate="{DataTemplate public:LeagueSelectionPage}" />
+
+        <ShellContent
+            Title="Partidos"
+            Route="matches"
+            ContentTemplate="{DataTemplate public:MatchesPage}" />
+
+        <ShellContent
+            Title="Sesión"
+            Route="login"
+            ContentTemplate="{DataTemplate private:LoginPage}" />
+
+        <ShellContent
+            Title="Admin"
+            Route="admin"
+            ContentTemplate="{DataTemplate private:AdminDashboardPage}" />
+    </TabBar>
+
+</Shell>

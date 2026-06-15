@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:LigasPiero.Maui.ViewModels"
+             x:Class="LigasPiero.Maui.Views.Private.AdminDashboardPage"
+             x:DataType="vm:AdminDashboardViewModel"
+             Title="{Binding Title}">
+
+    <Grid RowDefinitions="Auto,*,Auto" Padding="16">
+        <!-- Header -->
+        <VerticalStackLayout Grid.Row="0" Spacing="8" Margin="0,16,0,24">
+            <Label Text="🛡️ Panel de Administración"
+                   FontSize="24"
+                   FontAttributes="Bold"
+                   HorizontalOptions="Center"
+                   TextColor="{StaticResource Primary}" />
+            <Label Text="{Binding WelcomeMessage}"
+                   FontSize="14"
+                   HorizontalOptions="Center"
+                   TextColor="Gray" />
+        </VerticalStackLayout>
+
+        <!-- Action Cards -->
+        <VerticalStackLayout Grid.Row="1" Spacing="16">
+            <!-- QR Scanner Card -->
+            <Frame Padding="20" CornerRadius="16"
+                   BackgroundColor="{AppThemeBinding Light=#E8F5E9, Dark=#1B5E20}"
+                   HasShadow="True">
+                <Frame.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding NavigateToQRScannerCommand}" />
+                </Frame.GestureRecognizers>
+                <HorizontalStackLayout Spacing="16">
+                    <Label Text="📱" FontSize="48" VerticalOptions="Center" />
+                    <VerticalStackLayout VerticalOptions="Center" Spacing="4">
+                        <Label Text="Escanear QR de Jugador"
+                               FontSize="18" FontAttributes="Bold" />
+                        <Label Text="Escanea el código QR para verificar la información del jugador"
+                               FontSize="13" TextColor="Gray" />
+                    </VerticalStackLayout>
+                </HorizontalStackLayout>
+            </Frame>
+
+            <!-- Match Editor Card -->
+            <Frame Padding="20" CornerRadius="16"
+                   BackgroundColor="{AppThemeBinding Light=#E3F2FD, Dark=#0D47A1}"
+                   HasShadow="True">
+                <Frame.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding NavigateToMatchEditorCommand}" />
+                </Frame.GestureRecognizers>
+                <HorizontalStackLayout Spacing="16">
+                    <Label Text="✏️" FontSize="48" VerticalOptions="Center" />
+                    <VerticalStackLayout VerticalOptions="Center" Spacing="4">
+                        <Label Text="Editar Partidos"
+                               FontSize="18" FontAttributes="Bold" />
+                        <Label Text="Gestionar planilla, goles y tarjetas de los partidos"
+                               FontSize="13" TextColor="Gray" />
+                    </VerticalStackLayout>
+                </HorizontalStackLayout>
+            </Frame>
+        </VerticalStackLayout>
+
+        <!-- Logout Button -->
+        <Button Grid.Row="2"
+                Text="Cerrar Sesión"
+                Command="{Binding LogoutCommand}"
+                BackgroundColor="#E53935"
+                TextColor="White"
+                CornerRadius="12"
+                HeightRequest="50"
+                Margin="0,24,0,16" />
+    </Grid>
+</ContentPage>
